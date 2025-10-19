@@ -1,27 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputTextarea,
-  PromptInputFooter,
-  PromptInputSubmit,
-  PromptInputTools,
-  PromptInputAttachments,
-  PromptInputAttachment,
-  PromptInputActionMenu,
-  PromptInputActionMenuTrigger,
-  PromptInputActionMenuContent,
-  PromptInputActionAddAttachments,
-  PromptInputModelSelect,
-  PromptInputModelSelectTrigger,
-  PromptInputModelSelectContent,
-  PromptInputModelSelectItem,
-  PromptInputModelSelectValue,
-} from "@/components/ai-elements/prompt-input";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { SparklesIcon } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { ChatPanel } from "@/components/chat/chat-panel";
+import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
 
 const MODELS = [
   { id: "gemini-pro", name: "Gemini Pro" },
@@ -33,7 +17,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Array<{ id: string; role: "user" | "assistant"; content: string }>>([]);
   const [selectedModel, setSelectedModel] = useState("gemini-flash");
 
-  const handleSubmit = (message: { text?: string }) => {
+  const handleSubmit = (message: PromptInputMessage) => {
     if (!message.text?.trim()) return;
 
     const messageText = message.text.trim();
@@ -53,6 +37,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-2xl space-y-4">
         {/* Header */}
         <div className="text-center space-y-2 mb-8">
@@ -76,44 +65,13 @@ export default function Home() {
           </div>
         )}
 
-        {/* Prompt Input */}
-        <PromptInput onSubmit={handleSubmit} className="rounded-lg shadow-sm" style={{ backgroundColor: "#f8f9fa" }} multiple>
-          <PromptInputAttachments>
-            {(attachment) => <PromptInputAttachment key={attachment.id} data={attachment} />}
-          </PromptInputAttachments>
-
-          <PromptInputBody>
-            <PromptInputTextarea placeholder="Ask Gemini something..." />
-          </PromptInputBody>
-
-          <PromptInputFooter>
-            <PromptInputTools>
-              <PromptInputActionMenu>
-                <PromptInputActionMenuTrigger />
-                <PromptInputActionMenuContent>
-                  <PromptInputActionAddAttachments />
-                </PromptInputActionMenuContent>
-              </PromptInputActionMenu>
-            </PromptInputTools>
-
-            <div className="flex items-center gap-2">
-              <PromptInputModelSelect value={selectedModel} onValueChange={setSelectedModel}>
-                <PromptInputModelSelectTrigger>
-                  <PromptInputModelSelectValue />
-                </PromptInputModelSelectTrigger>
-                <PromptInputModelSelectContent>
-                  {MODELS.map((model) => (
-                    <PromptInputModelSelectItem key={model.id} value={model.id}>
-                      {model.name}
-                    </PromptInputModelSelectItem>
-                  ))}
-                </PromptInputModelSelectContent>
-              </PromptInputModelSelect>
-
-              <PromptInputSubmit className="bg-[#f8f9fa] text-[#495057] hover:bg-[#f8f9fa] hover:text-[#495057]" />
-            </div>
-          </PromptInputFooter>
-        </PromptInput>
+        {/* Chat Panel */}
+        <ChatPanel
+          selectedModel={selectedModel}
+          onModelChange={setSelectedModel}
+          onSubmit={handleSubmit}
+          models={MODELS}
+        />
       </div>
     </div>
   );
