@@ -6,9 +6,9 @@ export default defineSchema({
     conversations: defineTable({
         title: v.string(),
         model: v.union(
-            v.literal("Pro"),
-            v.literal("Flash"),
-            v.literal("Lite")
+            v.literal("gemini-pro"),
+            v.literal("gemini-flash"),
+            v.literal("gemini-lite")
         )
     })
     .searchIndex("by_title",{
