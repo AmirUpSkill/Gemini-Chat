@@ -6,9 +6,9 @@ export const createConversation = mutation({
   args: {
     title: v.optional(v.string()),
     model: v.union(
-      v.literal("Pro"),
-      v.literal("Flash"),
-      v.literal("Lite")
+      v.literal("gemini-pro"),
+      v.literal("gemini-flash"),
+      v.literal("gemini-lite")
     ),
   },
   handler: async (ctx, args) => {

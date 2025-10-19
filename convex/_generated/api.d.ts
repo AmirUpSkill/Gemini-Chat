@@ -11,7 +11,6 @@
 import type * as conversations from "../conversations.js";
 import type * as messages from "../messages.js";
 import type * as mutations from "../mutations.js";
-import type * as seed from "../seed.js";
 
 import type {
   ApiFromModules,
@@ -31,7 +30,6 @@ declare const fullApi: ApiFromModules<{
   conversations: typeof conversations;
   messages: typeof messages;
   mutations: typeof mutations;
-  seed: typeof seed;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
