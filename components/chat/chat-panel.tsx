@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   PromptInput,
   PromptInputBody,
@@ -26,17 +26,24 @@ import {
 interface ChatPanelProps {
   selectedModel: string;
   onModelChange: (model: string) => void;
-  onSubmit: (message: PromptInputMessage) => void;
+  onStart: (userText: string) => string; 
+  onDelta: (assistantId: string, delta: string) => void;
+  onError?: (error: string) => void;
   models: Array<{ id: string; name: string }>;
+  isLoading?: boolean;
 }
 
 export function ChatPanel({
   selectedModel,
   onModelChange,
-  onSubmit,
+  onStart,
+  onDelta,
+  onError,
   models,
+  isLoading = false,
 }: ChatPanelProps) {
   const { theme } = useTheme();
+  const [isStreaming, setIsStreaming] = useState(false);
 
   // Calculate theme-aware styles
   const themeStyles = useMemo(() => {
@@ -51,14 +58,68 @@ export function ChatPanel({
     };
   }, [theme]);
 
+  // --- Handle streaming from Gemini API ---
+  const handleStreamingSubmit = async (message: PromptInputMessage) => {
+    if (!message.text?.trim()) return;
+
+    setIsStreaming(true);
+    const userText = message.text.trim();
+
+    // Let parent add user+assistant placeholder; get assistant id back
+    const assistantId = onStart(userText);
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "user",
+              content: userText,
+            },
+          ],
+          model: selectedModel,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to get response");
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          if (chunk) onDelta(assistantId, chunk);
+        }
+      } else {
+        // Fallback if stream not supported
+        const text = await response.text();
+        if (text) onDelta(assistantId, text);
+      }
+    } catch (err: any) {
+      console.error("Streaming error:", err);
+      onError?.(err?.message ?? "Failed to get response from Gemini");
+    } finally {
+      setIsStreaming(false);
+    }
+  };
+
   return (
-    <PromptInput onSubmit={onSubmit} className="rounded-lg shadow-sm" multiple>
+    <PromptInput onSubmit={handleStreamingSubmit} className="rounded-lg shadow-sm" multiple>
       <PromptInputAttachments>
         {(attachment) => <PromptInputAttachment key={attachment.id} data={attachment} />}
       </PromptInputAttachments>
 
       <PromptInputBody>
-        <PromptInputTextarea placeholder="Ask Gemini something..." />
+        <PromptInputTextarea 
+          placeholder="Ask Gemini something..." 
+          disabled={isStreaming || isLoading}
+        />
       </PromptInputBody>
 
       <PromptInputFooter>
