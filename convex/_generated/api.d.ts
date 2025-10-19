@@ -9,8 +9,8 @@
  */
 
 import type * as conversations from "../conversations.js";
-import type * as http from "../http.js";
 import type * as messages from "../messages.js";
+import type * as seed from "../seed.js";
 
 import type {
   ApiFromModules,
@@ -28,8 +28,8 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   conversations: typeof conversations;
-  http: typeof http;
   messages: typeof messages;
+  seed: typeof seed;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
@@ -42,40 +42,4 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {
-  persistentTextStreaming: {
-    lib: {
-      addChunk: FunctionReference<
-        "mutation",
-        "internal",
-        { final: boolean; streamId: string; text: string },
-        any
-      >;
-      createStream: FunctionReference<"mutation", "internal", {}, any>;
-      getStreamStatus: FunctionReference<
-        "query",
-        "internal",
-        { streamId: string },
-        "pending" | "streaming" | "done" | "error" | "timeout"
-      >;
-      getStreamText: FunctionReference<
-        "query",
-        "internal",
-        { streamId: string },
-        {
-          status: "pending" | "streaming" | "done" | "error" | "timeout";
-          text: string;
-        }
-      >;
-      setStreamStatus: FunctionReference<
-        "mutation",
-        "internal",
-        {
-          status: "pending" | "streaming" | "done" | "error" | "timeout";
-          streamId: string;
-        },
-        any
-      >;
-    };
-  };
-};
+export declare const components: {};
