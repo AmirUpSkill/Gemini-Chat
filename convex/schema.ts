@@ -22,11 +22,8 @@ export default defineSchema({
   messages: defineTable({
     conversationId: v.id("conversations"),
     role: v.union(v.literal("user"), v.literal("assistant")),
-    content: v.string(), // final content (assistant may be empty while streaming)
+    content: v.string(),
     createdAt: v.number(),
-    // Streaming metadata:
-    status: v.optional(v.union(v.literal("final"), v.literal("streaming"), v.literal("aborted"))),
-    streamId: v.optional(v.string()), // PersistentTextStreaming StreamId as string
   })
     .index("by_conversationId_createdAt", ["conversationId", "createdAt"])
     .index("by_conversationId", ["conversationId"]),

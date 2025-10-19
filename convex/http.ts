@@ -1,12 +1,8 @@
 import { httpRouter } from "convex/server";
-import { streamChat } from "./messages";
 
 const http = httpRouter();
 
-http.route({
-  path: "/chat-stream",
-  method: "POST",
-  handler: streamChat,
-});
+// Currently using Convex actions instead of HTTP routes
+// HTTP routes can be added here if needed for external integrations
 
 export default http;
