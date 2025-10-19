@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.23",
+    "@convex-dev/persistent-text-streaming": "^0.2.4",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -26,6 +28,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "convex": "^1.28.0",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.546.0",
     "message": "^0.0.1",
