@@ -52,6 +52,7 @@ export function useConversation(initialId: Id<"conversations"> | null = null) {
       if (currentConversationId === id) setCurrentConversationId(null);
     },
     updateTitle: (id: Id<"conversations">, newTitle: string) => updateTitle({ conversationId: id, newTitle }),
+    selectConversation: (id: Id<"conversations">) => setCurrentConversationId(id),
     reset: () => setCurrentConversationId(null),
   };
 }

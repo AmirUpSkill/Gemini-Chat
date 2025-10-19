@@ -20,36 +20,23 @@ export function ChatPanel({ selectedModel, onModelChange, onStart, onDelta, onSt
   const handleSubmit = async (msg: PromptInputMessage) => {
     const text = msg.text?.trim();
     if (!text) return;
-    
     setIsStreaming(true);
     try {
       const { assistantId, conversationId } = await onStart(text);
       if (!assistantId) return;
-
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [{ role: "user", content: text }], model: selectedModel }),
-      });
-
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: [{ role: "user", content: text }], model: selectedModel }) });
       if (!res.ok) throw new Error("Failed to get response");
-
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       let content = "";
-
       if (reader) {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
-          if (chunk) {
-            content += chunk;
-            onDelta(assistantId, chunk);
-          }
+          if (chunk) { content += chunk; onDelta(assistantId, chunk); }
         }
       }
-
       await onStreamComplete(assistantId, content, conversationId || undefined);
     } catch (err) {
       console.error("Streaming error:", err);
@@ -58,9 +45,5 @@ export function ChatPanel({ selectedModel, onModelChange, onStart, onDelta, onSt
     }
   };
 
-  return (
-    <MessageInput onSubmit={handleSubmit} isStreaming={isStreaming}>
-      <ModelSelector {...{ selectedModel, onModelChange, models }} />
-    </MessageInput>
-  );
+  return <MessageInput onSubmit={handleSubmit} isStreaming={isStreaming}><ModelSelector {...{ selectedModel, onModelChange, models }} /></MessageInput>;
 }
