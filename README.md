@@ -5,6 +5,10 @@ A modern AI chatbot application leveraging the power of Google's Gemini AI model
 <!-- Image placeholder - Project thumbnail will be added here -->
 [Project Thumbnail Image]
 
+## Demo
+
+**Watch the full demo:** [Gemini Chat Demo Video](https://www.youtube.com/watch?v=VElfo2NN5so)
+
 ## Features
 
 ### Core Functionality
