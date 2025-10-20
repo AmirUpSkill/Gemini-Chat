@@ -2,8 +2,7 @@
 
 A modern AI chatbot application leveraging the power of Google's Gemini AI models. Built with Next.js, TypeScript, TailwindCSS, and ConvexDB for a seamless real-time chat experience.
 
-<!-- Image placeholder - Project thumbnail will be added here -->
-[Project Thumbnail Image]
+![Gemini Chat](docs/image.png)
 
 ## Demo
 
